@@ -445,6 +445,8 @@ _stage_chroot() {
 	_run_step _511_cleanup
 }
 
+######## Installation Steps ########
+
 _100_setup() {
 	_run_step _111_readme
 	_run_step _121_create_persist_dir
@@ -512,8 +514,6 @@ _121_create_persist_dir() {
 	_ask_yes_no 'Create the optional persistence directory?' 'yes' || return 1
 	_ask_run "mkdir '${persist_dir}'"
 }
-
-######## Installation Steps ########
 
 # Remind the user of how to switch TTYs.
 _tty_reminder() {
