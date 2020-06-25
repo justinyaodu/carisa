@@ -7,8 +7,8 @@
 After booting the [Arch Linux live medium](https://www.archlinux.org/download/) and connecting to the internet:
 
 ```console
-# curl -O https://raw.githubusercontent.com/justinyaodu/carisa/master/carisa.sh
-# ./carisa.sh start
+$ curl -O https://raw.githubusercontent.com/justinyaodu/carisa/master/carisa.sh
+$ ./carisa.sh start
 ```
 
 ## Features
@@ -17,7 +17,7 @@ After booting the [Arch Linux live medium](https://www.archlinux.org/download/) 
 
 * View (and edit) the commands run for every installation step
 * Skip any steps which you would rather do manually
-* Exit at any time with <kbd>Ctrl</kbd><kbd>C</kbd>, and resume where you left off
+* Exit at any time with <kbd>Ctrl</kbd>+<kbd>C</kbd>, and resume where you left off
 
 Besides performing the essential steps listed in the installation guide, `carisa` can also:
 
