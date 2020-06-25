@@ -8,7 +8,7 @@ After booting the [Arch Linux live medium](https://www.archlinux.org/download/) 
 
 ```console
 $ curl -O https://raw.githubusercontent.com/justinyaodu/carisa/master/carisa.sh
-$ ./carisa.sh start
+$ bash carisa.sh start
 ```
 
 ## Features
