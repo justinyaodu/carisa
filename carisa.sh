@@ -334,9 +334,6 @@ _ask_keyboard_layout() {
 	echo "${keymap}"
 }
 
-# Store a list of all available package names in a variable.
-available_package_names="$(pacman -Ssq)"
-
 # _package_exists <package_name>
 # Return 0 if this package exists in the repositories.
 _package_exists() {
@@ -1528,6 +1525,15 @@ while [ "${1}" ]; do
 	esac
 	shift
 done
+
+######## Initialization ########
+
+if ! available_package_names="$(pacman -Ssq)"; then
+	if _ask_yes_no 'Synchronize package databases?' 'yes'; then
+		_ask_run 'pacman -Sy'
+		available_package_names="$(pacman -Ssq)"
+	fi
+fi
 
 # Run the selected installation stage.
 "_stage_${install_stage}"
