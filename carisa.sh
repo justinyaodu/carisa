@@ -952,8 +952,13 @@ _331_chroot() {
 
 	echo
 	_info 'Please start carisa in the chroot. If you wish to perform other
-			tasks in the chroot concurrently, you may chroot into
-			the new system from another TTY.'
+			tasks in the chroot, you will have the option to start
+			a shell in the chroot after system configuration is
+			complete. Otherwise, you may press Ctrl+C to exit, and
+			manually resume carisa in the chroot:'
+	_bullet 'arch-chroot /mnt' '#'
+	_bullet '(commands you want to run in the chroot)' '#'
+	_bullet 'bash /carisa.sh chroot' '#'
 	_ask_run 'arch-chroot /mnt bash /carisa.sh chroot'
 
 	echo
@@ -970,6 +975,7 @@ _400_configuration() {
 	_run_step _441_recreate_initramfs
 	_run_step _451_set_root_password
 	_run_step _460_boot_manager
+	_run_step _471_chroot_shell
 }
 
 _410_system_time() {
@@ -1416,6 +1422,25 @@ _463_grub_mkconfig() {
 
 	echo
 	_ask_run "grub-mkconfig -o ${path}"
+}
+
+_471_chroot_shell() {
+	if [ "${1}" == '-s' ]; then
+		_marked_status
+		return
+	fi
+
+	_info 'If you wish to perform additional tasks in the chroot, you may
+		now start a Bash shell within the chroot.'
+	_ask_yes_no 'Start a Bash shell in the chroot?' 'no' || return 1
+	
+	echo
+	_ask_run 'bash'
+
+	echo
+	_info 'Exited shell.'
+	echo
+	_ask_mark_complete
 }
 
 _511_cleanup() {
