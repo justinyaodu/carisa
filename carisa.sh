@@ -479,15 +479,6 @@ _111_readme() {
 	echo
 	_info 'You may press Ctrl+C to exit carisa at any time, and your
 			progress will be remembered when you run carisa again.'
-
-	# automate a mostly unopinionated wiki installation
-	# perhaps the most opinionated thing is that installing GRUB is included
-	# as a step, but of course you may manually install your own boot manager
-	# give the user manual control over partitioning, etc.
-	# only commands run without user confirmation are:
-	# querying system state (checking if files exist, etc.)
-	# changing carisa's own persistence files
-	# have the arch wiki open
 	_pause
 }
 
