@@ -10,7 +10,7 @@ persist_dir="${script_dir}/.carisa"
 # _has_content <file>
 # Check if <file> has lines that are neither whitespace nor comments.
 _has_content() {
-	grep -vq '^(#.*|[:space:])$' "${1}"
+	grep -Evq '^(#.*|[[:space:]]*)$' "${1}"
 }
 
 ######## Output Formatting ########
