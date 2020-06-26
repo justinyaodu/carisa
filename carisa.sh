@@ -396,11 +396,11 @@ _get_status() {
 # Output an appropriate color for the given status code.
 _status_color() {
 	if [ "${1}" -eq 0 ]; then
-		echo "${green}"
+		echo -n "${green}"
 	elif [ "${1}" -eq 1 ]; then
-		echo "${red}"
+		echo -n "${red}"
 	else
-		echo "${yellow}"
+		echo -n "${yellow}"
 	fi
 }
 
