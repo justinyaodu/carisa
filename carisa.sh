@@ -948,6 +948,20 @@ _321_generate_fstab() {
 	_ask_edit "${path}" 'yes'
 }
 
+# Display the command used to (re)run carisa in the chroot.
+_show_carisa_in_chroot_command() {
+	_bullet 'bash /carisa.sh chroot' '#'
+}
+
+# Remind the user of how to exit carisa once in the chroot.
+_ctrl_c_reminder() {
+	_bullet 'To exit carisa and perform this action manually, you may use
+			Ctrl+C to access the chroot shell. Once you are
+			finished, the following command will start carisa
+			again:'
+	_show_carisa_in_chroot_command
+}
+
 _331_chroot() {
 	if [ "${1}" == '-s' ]; then
 		_marked_status
@@ -959,22 +973,18 @@ _331_chroot() {
 	_info 'To continue using carisa in the new system, the carisa script
 			and its persistence folder (if any) must be copied into
 			the chroot.'
-	if [ -d "${persist_dir}" ]; then
-		_ask_run "cp -r '${0}' '${persist_dir}' /mnt"
-	else
-		_ask_run "cp '${0}' /mnt"
-	fi
+	_ask_run "cp '${0}' /mnt"
+	[ -d "${persist_dir}" ] && _ask_run "cp -r '${persist_dir}' /mnt"
 
 	echo
-	_info 'Please start carisa in the chroot. If you wish to perform other
-			tasks in the chroot, you will have the option to start
-			a shell in the chroot after system configuration is
-			complete. Otherwise, you may press Ctrl+C to exit, and
-			manually resume carisa in the chroot:'
-	_bullet 'arch-chroot /mnt' '#'
-	_bullet '(commands you want to run in the chroot)' '#'
-	_bullet 'bash /carisa.sh chroot' '#'
-	_ask_run 'arch-chroot /mnt bash /carisa.sh chroot'
+	_info 'Please chroot into the new system. You may start carisa in the
+			chroot by entering the following command into the chroot
+			shell:'
+	_show_carisa_in_chroot_command
+	_info 'Once carisa is running in the chroot, you may regain access to
+			the chroot shell using Ctrl+C. To continue with carisa,
+			simply enter the above command again.'
+	_ask_run 'arch-chroot /mnt'
 
 	echo
 	_info 'Exited chroot.'
@@ -1309,7 +1319,7 @@ _460_boot_manager() {
 		_warn 'The GRUB package is not installed. If you will use
 				another boot manager (e.g. rEFInd) you may now
 				install it manually.'
-		_tty_reminder
+		_ctrl_c_reminder
 		_pause
 	fi
 }
