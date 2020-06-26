@@ -982,7 +982,7 @@ _411_set_time_zone() {
 
 	if [ "${1}" == '-s' ]; then
 		if [ -e "${path}" ]; then
-			echo "Time zone set ('${path}' already exists)."
+			echo "Time zone set ('${path}' exists)."
 			return 0
 		else
 			echo "Time zone not set ('${path}' does not exist)."
@@ -1018,7 +1018,7 @@ _412_generate_etc_adjtime() {
 
 	if [ "${1}" == '-s' ]; then
 		if [ -f "${path}" ]; then
-			echo "The file '${path}' already exists."
+			echo "The file '${path}' exists."
 			return 0
 		else
 			echo "The file '${path}' does not exist."
@@ -1101,7 +1101,7 @@ _423_create_locale_conf() {
 
 	if [ "${1}" == '-s' ]; then
 		if [ -f "${path}" ]; then
-			echo "The file '${path}' already exists."
+			echo "The file '${path}' exists."
 			return 0
 		else
 			echo "The file '${path}' does not exist."
@@ -1169,7 +1169,7 @@ _431_set_hostname() {
 
 	if [ "${1}" == '-s' ]; then
 		if [ -f "${path}" ]; then
-			echo "Hostname file '${path}' already exists."
+			echo "Hostname file '${path}' exists."
 			return 0
 		else
 			echo "Hostname file '${path}' does not exist."
