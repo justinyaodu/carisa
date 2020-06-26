@@ -92,18 +92,18 @@ _paragraph() {
 	<<<"${1}" tr '\n' ' ' | tr -d '\t' | fold -s -w "${line_length}"
 }
 
-# _bullet <text>
-# Similar to _paragraph, but place '* ' before the first line, and indent all
-# additional lines with two spaces.
+# _bullet <text> [bullet]
+# Similar to _paragraph, but place "${bullet} " before the first line, and
+# indent all additional lines with the appropriate number of spaces.
 _bullet() {
-	local bullet="${2:-"*"}"
-	echo "$(_paragraph "${1}" "$(( $(_line_length) - 2 ))")" |
+	local bullet="${2:-"*"} "
+	echo "$(_paragraph "${1}" "$(( $(_line_length) - ${#bullet} ))")" |
 	{
 		read -r line
-		echo "${bullet} ${line}"
+		echo "${bullet}${line}"
 
 		while read -r line; do
-			echo "  ${line}"
+			echo "${bullet//?/ }${line}"
 		done
 	}
 }
@@ -379,8 +379,7 @@ _ask_packages() {
 ######## Installation Step Wrapper ########
 
 # _get_status <step_name>
-# Output a colored status message given by an installation step, and return its
-# status code.
+# Output an installation step's status message and return its status code.
 _get_status() {
 	local message
 	local return_value
@@ -388,18 +387,21 @@ _get_status() {
 	message="$("${1}" -s)"
 	return_value="${?}"
 
-	local color
-	if [ "${return_value}" -eq 0 ]; then
-		color="${green}"
-	elif [ "${return_value}" -eq 1 ]; then
-		color="${red}"
-	else
-		color="${yellow}"
-	fi
-
-	[ "${message}" ] && echo "${color}${message}${reset}"
+	echo "${message}"
 
 	return "${return_value}"
+}
+
+# _status_color <status_code>
+# Output an appropriate color for the given status code.
+_status_color() {
+	if [ "${1}" -eq 0 ]; then
+		echo "${green}"
+	elif [ "${1}" -eq 1 ]; then
+		echo "${red}"
+	else
+		echo "${yellow}"
+	fi
 }
 
 # _run_step <step_function>
@@ -413,10 +415,16 @@ _run_step() {
 		"${function_name}"
 	else
 		local status_message
-		status_message="$(_get_status "${function_name}")"
-		local status="${?}"
+		local status
 
-		[ "${status_message}" ] && _bullet "${status_message}" 'Status:'
+		status_message="$(_get_status "${function_name}")"
+		status="${?}"
+
+		if [ "${status_message}" ]; then
+			_status_color "${status}"
+			_bullet "${status_message}" 'Status:'
+			echo -n "${reset}"
+		fi
 		
 		if [ "${status}" -eq 0 ] && [ ! "${no_skip_completed}" ]; then
 			return 0
@@ -428,9 +436,12 @@ _run_step() {
 		"${function_name}"
 
 		status_message="$(_get_status "${function_name}")"
+		status="${?}"
 		if [ "${status_message}" ]; then
 			echo
+			_status_color "${status}"
 			_bullet "${status_message}" 'Status:'
+			echo -n "${reset}"
 		fi
 	fi
 }
