@@ -5,6 +5,14 @@
 script_dir="$(dirname "${0}")"
 persist_dir="${script_dir}/.carisa"
 
+######## Utility Functions ########
+
+# _has_content <file>
+# Check if <file> has lines that are neither whitespace nor comments.
+_has_content() {
+	grep -vq '^(#.*|[:space:])$' "${1}"
+}
+
 ######## Output Formatting ########
 
 # Color variables.
@@ -899,11 +907,11 @@ _321_generate_fstab() {
 	local path='/mnt/etc/fstab'
 
 	if [ "${1}" == '-s' ]; then
-		if [ -f "${path}" ]; then
-			echo "The file '${path}' already exists."
+		if _has_content "${path}"; then
+			echo "The file '${path}' has been generated."
 			return 0
 		else
-			echo "The file '${path}' does not exist."
+			echo "The file '${path}' has not been generated."
 			return 1
 		fi
 	fi
@@ -1138,7 +1146,7 @@ _423_set_default_keyboard_layout() {
 
 _430_network_configuration() {
 	_run_step _431_set_hostname
-	_run_step _432_create_etc_hosts
+	_run_step _432_generate_etc_hosts
 }
 
 _431_set_hostname() {
@@ -1158,20 +1166,20 @@ _431_set_hostname() {
 	_ask_run "echo '$(_ask_str 'Enter hostname:')' > '${path}'"
 }
 
-_432_create_etc_hosts() {
+_432_generate_etc_hosts() {
 	local path='/etc/hosts'
 
 	if [ "${1}" == '-s' ]; then
-		if [ -f "${path}" ]; then
-			echo "Static host table '${path}' already exists."
+		if _has_content "${path}"; then
+			echo "Host table '${path}' has been generated."
 			return 0
 		else
-			echo "Static host table '${path}' does not exist."
+			echo "Host table '${path}' has not been generated."
 			return 1
 		fi
 	fi
 
-	_ask_yes_no "Create static host table '${path}'?" "yes" || return 1
+	_ask_yes_no "Generate static host table '${path}'?" "yes" || return 1
 
 	# TODO check if hostname has been set yet, warn if it hasn't
 	local hn="$(hostname)"
