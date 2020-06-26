@@ -1202,8 +1202,14 @@ _432_generate_etc_hosts() {
 
 	_ask_yes_no "Generate static host table '${path}'?" "yes" || return 1
 
-	# TODO check if hostname has been set yet, warn if it hasn't
-	local hn="$(hostname)"
+	local hostname_path='/etc/hostname'
+	if [ -f "${hostname_path}" ]; then
+		local hn="$(<"${hostname_path}")"
+	else
+		_error "Hostname not set in '${hostname_path}'! Please change
+				the dummy hostname in the following commands."
+		local hn='MYHOSTNAME'
+	fi
 
 	echo
 	_info "Enter this system's permanent IP address, or leave the provided
