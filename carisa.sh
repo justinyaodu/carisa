@@ -228,7 +228,7 @@ _ask_yes_no() {
 
 ######## Progress Tracking ########
 
-progress_file="${persist_dir}/progress"
+progress_file="${persist_dir}/marked-complete"
 
 # Ask the user to mark the calling function as having completed successfully.
 _ask_mark_complete() {
