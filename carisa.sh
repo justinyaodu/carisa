@@ -1039,25 +1039,40 @@ _412_generate_etc_adjtime() {
 }
 
 _420_localization() {
-	_run_step _421_generate_locales
-	_run_step _422_create_locale_conf
-	_run_step _423_set_default_keyboard_layout
+	_run_step _421_select_locales
+	_run_step _422_generate_locales
+	_run_step _423_create_locale_conf
+	_run_step _424_set_default_keyboard_layout
 }
 
-_421_generate_locales() {
+_421_select_locales() {
 	local path='/etc/locale.gen'
 
 	if [ "${1}" == '-s' ]; then
-		_marked_status
-		return
+		if _has_content "${path}"; then
+			echo "Locales have been selected in '${path}'."
+			return 0
+		else
+			echo "Locales have not been selected in '${path}'."
+			return 1
+		fi
 	fi
 
-	_ask_yes_no 'Select and generate system locale(s)?' 'yes' || return 1
+	_ask_yes_no 'Select system locale(s)?' 'yes' || return 1
 
 	echo
 	_info "Please uncomment the desired locale entries (e.g. 'en_US.UTF-8')
 			in '${path}'."
 	_ask_edit "${path}" 'yes'
+}
+
+_422_generate_locales() {
+	if [ "${1}" == '-s' ]; then
+		_marked_status
+		return
+	fi
+
+	_ask_yes_no 'Generate system locale(s)?' 'yes' || return 1
 	
 	echo
 	_ask_run 'locale-gen'
@@ -1081,7 +1096,7 @@ _guess_locale() {
 	fi
 }
 
-_422_create_locale_conf() {
+_423_create_locale_conf() {
 	local path='/etc/locale.conf'
 
 	if [ "${1}" == '-s' ]; then
@@ -1100,7 +1115,7 @@ _422_create_locale_conf() {
 	_ask_run "echo 'LANG=$(_guess_locale)' > ${path}"
 }
 
-_423_set_default_keyboard_layout() {
+_424_set_default_keyboard_layout() {
 	local path='/etc/vconsole.conf'
 
 	if [ "${1}" == '-s' ]; then
