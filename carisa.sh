@@ -910,6 +910,10 @@ _312_pacstrap() {
 	packages="${packages} $(_ask_packages)"
 
 	echo
+	_info 'Add any other packages?'
+	packages="${packages} $(_ask_packages "$(_config_get 'extra_pkgs')")"
+
+	echo
 	_ask_run "pacstrap /mnt $(
 			sed -E 's/^\s+|\s+$// ; s/\s+/ /g' <<< "${packages}")"
 }
