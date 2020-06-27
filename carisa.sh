@@ -460,8 +460,6 @@ _stage_start() {
 	_run_step _100_setup
 	_run_step _200_preinstallation
 	_run_step _300_installation
-	_run_step _511_cleanup
-	_run_step _611_reboot
 }
 
 _stage_chroot() {
@@ -1007,7 +1005,7 @@ _show_carisa_in_chroot_command() {
 # Remind the user of how to exit carisa once in the chroot.
 _ctrl_c_reminder() {
 	_bullet 'To exit carisa and perform this action manually, you may use
-			Ctrl+C to access the chroot shell. Once you are
+			Ctrl+C to return to the chroot shell. Once you are
 			finished, the following command will start carisa
 			again:'
 	_show_carisa_in_chroot_command
@@ -1036,16 +1034,6 @@ _331_chroot() {
 			the chroot shell using Ctrl+C. To continue with carisa,
 			simply enter the above command again.'
 	_ask_run 'arch-chroot /mnt'
-
-	echo
-	_info 'Exited chroot.'
-	# This doesn't actually seem to be caused by printing to stdout; it
-	# seems like this only occurs when attempting to read from stdin.
-	_warn "If you see a message showing 'suspended (tty output)' and are
-			presented with a zsh prompt, please enter 'fg' to
-			continue."
-	echo
-	_ask_mark_complete
 }
 
 _400_configuration() {
@@ -1509,6 +1497,11 @@ _463_grub_mkconfig() {
 	_ask_run "grub-mkconfig -o ${path}"
 }
 
+_500_finish() {
+	_run_step _511_cleanup
+	_run_step _521_finish_message
+}
+
 _511_cleanup() {
 	if [ "${1}" == '-s' ]; then
 		if [ -f "${0}" ] || [ -d "${persist_dir}" ]; then
@@ -1520,21 +1513,27 @@ _511_cleanup() {
 		fi
 	fi
 
+	_info 'The Arch Linux installation process is now complete.'
 	_ask_yes_no 'Delete carisa and associated files?' 'yes' || return 1
 
 	[ -f "${0}" ] && _ask_run "rm -v '${0}'"
 	[ -d "${persist_dir}" ] && _ask_run "rm -rv '${persist_dir}'"
 }
 
-_611_reboot() {
+_521_finish_message() {
 	if [ "${1}" == '-s' ]; then
-		echo 'A reboot is required to boot the newly installed system.'
 		return 1
 	fi
 
-	_ask_yes_no 'Reboot into the installed system?' 'yes' || return 1
-	_info 'Please remember to remove the installation medium, if necessary.'
-	_ask_run 'reboot'
+	_info 'Once carisa exits, you will be returned to the chroot shell. To
+			reboot into the newly installed system:'
+	_bullet "Exit the chroot shell (e.g. with 'exit' or Ctrl+D)"
+	_bullet "Reboot the system (e.g. with 'reboot')"
+	_info 'It may also be necessary to remove the installation medium, so
+			that the system does not boot the Arch Linux live
+			environment again.'
+	echo
+	_success 'Thank you for using carisa!'
 }
 
 ######## Usage and Version Messages ########
