@@ -464,12 +464,7 @@ _stage_start() {
 
 _stage_chroot() {
 	_run_step _400_configuration
-	_run_step _511_cleanup
-
-	echo
-	_warn "You are now in a chroot shell. To exit the chroot shell and
-			go back to carisa outside the chroot, use the 'exit'
-			command or press Ctrl+D."
+	_run_step _500_finish
 }
 
 ######## Installation Steps ########
