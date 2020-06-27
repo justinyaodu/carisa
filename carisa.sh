@@ -1029,7 +1029,11 @@ _331_chroot() {
 
 	echo
 	_info 'Exited chroot.'
-
+	# This doesn't actually seem to be caused by printing to stdout; it
+	# seems like this only occurs when attempting to read from stdin.
+	_warn "If you see a message showing 'suspended (tty output)' and are
+			presented with a zsh prompt, please enter 'fg' to
+			continue."
 	echo
 	_ask_mark_complete
 }
