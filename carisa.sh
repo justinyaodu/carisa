@@ -1014,8 +1014,8 @@ _331_chroot() {
 	_info 'To continue using carisa in the new system, the carisa script
 			and its persistence folder (if any) must be copied into
 			the chroot.'
-	_ask_run "cp '${0}' /mnt"
-	[ -d "${persist_dir}" ] && _ask_run "cp -r '${persist_dir}' /mnt"
+	_ask_run "cp -v '${0}' /mnt"
+	[ -d "${persist_dir}" ] && _ask_run "cp -rv '${persist_dir}' /mnt"
 
 	echo
 	_info 'Please chroot into the new system. You may start carisa in the
@@ -1508,8 +1508,8 @@ _511_cleanup() {
 
 	_ask_yes_no 'Delete carisa and associated files?' 'yes' || return 1
 
-	[ -f "${0}" ] && _ask_run "rm '${0}'"
-	[ -d "${persist_dir}" ] && _ask_run "rm -r '${persist_dir}'"
+	[ -f "${0}" ] && _ask_run "rm -v '${0}'"
+	[ -d "${persist_dir}" ] && _ask_run "rm -rv '${persist_dir}'"
 }
 
 _611_reboot() {
