@@ -61,6 +61,13 @@ _center_text() {
 	echo "${text:0:${width}}"
 }
 
+# _banner <text> [pad]
+# Output a single line, with the provided text centered using the padding text
+# (defaults to a space).
+_banner() {
+	_center_text "${1}" "$(_line_length)" "${2:-" "}"
+}
+
 # _function_banner <function_name>
 # Output a nicely formatted banner showing the name of an installation step.
 _function_banner() {
@@ -79,7 +86,7 @@ _function_banner() {
 	esac
 
 	echo
-	echo "$(_center_text " ${function_name} " "$(_line_length)" "${pad}")"
+	_banner " ${function_name} " "${pad}"
 	echo
 }
 
@@ -482,8 +489,7 @@ _111_readme() {
 		return 1
 	fi
 
-	local title='Carisa: A Respectful Install Script for Arch'
-	_center_text "${title}" "$(_line_length)" ' '
+	_banner 'Carisa: A Respectful Install Script for Arch'
 	echo
 	_info 'Throughout the installation process, you may be prompted to
 			switch to another TTY to perform an action manually.
