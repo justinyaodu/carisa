@@ -239,8 +239,8 @@ _ask_mark_complete() {
 			echo "${function_name}" >> "${progress_file}"
 		fi
 	else
-		_warn 'Cannot mark this step (${function_name}) as complete,
-				because persistence is disabled.'
+		_warn "Cannot mark this step (${function_name}) as complete,
+				because persistence is disabled."
 	fi
 }
 
