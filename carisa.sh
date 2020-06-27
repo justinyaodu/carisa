@@ -345,7 +345,8 @@ _ask_keyboard_layout() {
 # _package_exists <package_name>
 # Return 0 if this package exists in the repositories.
 _package_exists() {
-	grep -q "^${1}\$" <<< "${available_package_names}"
+	[ -f "${package_names_file}" ] || return 0
+	grep -q "^${1}\$" "${package_names_file}"
 }
 
 # _packages_exist [package_names...]
@@ -692,7 +693,8 @@ _300_installation() {
 
 _310_packages() {
 	_run_step _311_select_mirrors
-	_run_step _312_pacstrap
+	_run_step _312_generate_package_names_file
+	_run_step _313_pacstrap
 }
 
 mirrorlist_path='/etc/pacman.d/mirrorlist'
@@ -718,7 +720,7 @@ _311_select_mirrors() {
 	echo
 	if _ask_yes_no "Generate customized mirrorlist?" 'yes'; then
 		echo
-		_211a_generate_mirrorlist
+		_311a_generate_mirrorlist
 	fi
 
 	echo
@@ -728,7 +730,7 @@ _311_select_mirrors() {
 	_ask_mark_complete
 }
 
-_211a_generate_mirrorlist() {
+_311a_generate_mirrorlist() {
 	# Get the HTML content of the mirrorlist generator form, parse the
 	# country selection options to get the available country codes and
 	# country names, and store each pair as a tab-separated line.
@@ -803,6 +805,45 @@ _211a_generate_mirrorlist() {
 	_ask_run "sed -i 's/^#Server/Server/' ${mirrorlist_path}"
 }
 
+package_names_file="${persist_dir}/package-names"
+_312_generate_package_names_file() {
+	if [ "${1}" == '-s' ]; then
+		if [ -f "${package_names_file}" ]; then
+			echo "The file '${package_names_file}' exists."
+			return 0
+		elif [ -d "${persist_dir}" ]; then
+			echo "The file '${package_names_file}' does not exist."
+			return 1
+		else
+			echo "Persistence disabled."
+			return 2
+		fi
+	fi
+
+	_info "To validate the names of packages you select for installation,
+			carisa can store a list of all available package names
+			in the file '${package_names_file}'."
+	_ask_yes_no 'Generate list of package names?' 'yes' || return 1
+
+	if ! pacman -Ssq > "${package_names_file}"; then
+		# Make sure that an empty package names file isn't created,
+		# which would make it impossible to select any packages for
+		# installation.
+		rm "${package_names_file}"
+		
+		echo
+		_info 'To generate the list of package names, the package
+				databases must be refreshed first.'
+		_ask_yes_no 'Refresh package databases?' 'yes' || return 1
+		_ask_run 'pacman -Sy'
+
+		if ! pacman -Ssq > "${package_names_file}"; then
+			rm "${package_names_file}"
+			return 1
+		fi
+	fi
+}
+
 # Output 'intel' for Intel CPUs, 'amd' for AMD, and nothing if unsure.
 _guess_cpu_vendor() {
 	local vendor_id="$(grep '^vendor_id' '/proc/cpuinfo')"
@@ -821,7 +862,7 @@ _guess_cpu_vendor() {
 	fi
 }
 
-_312_pacstrap() {
+_313_pacstrap() {
 	if [ "${1}" == '-s' ]; then
 		if [ -d '/mnt/var/cache/pacman' ]; then
 			echo 'The base system has been installed.'
@@ -1595,15 +1636,6 @@ while [ "${1}" ]; do
 	esac
 	shift
 done
-
-######## Initialization ########
-
-if ! available_package_names="$(pacman -Ssq)"; then
-	if _ask_yes_no 'Synchronize package databases?' 'yes'; then
-		_ask_run 'pacman -Sy'
-		available_package_names="$(pacman -Ssq)"
-	fi
-fi
 
 # Run the selected installation stage.
 "_stage_${install_stage}"
