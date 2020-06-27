@@ -1029,6 +1029,9 @@ _331_chroot() {
 			the chroot shell using Ctrl+C. To continue with carisa,
 			simply enter the above command again.'
 	_ask_run 'arch-chroot /mnt'
+
+	# Exit here to avoid printing a confusing status message.
+	exit 0
 }
 
 _400_configuration() {
