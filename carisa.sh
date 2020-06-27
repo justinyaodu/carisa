@@ -1519,6 +1519,7 @@ _611_reboot() {
 	fi
 
 	_ask_yes_no 'Reboot into the installed system?' 'yes' || return 1
+	_info 'Please remember to remove the installation medium, if necessary.'
 	_ask_run 'reboot'
 }
 
