@@ -396,7 +396,7 @@ _get_status() {
 # _status_color <status_code>
 # Output an appropriate color for the given status code.
 _status_color() {
-	if [ "${1}" -eq 0 ]; then
+	if [ "${1}" -eq 0 ] || [ "${1}" -eq 4 ]; then
 		echo -n "${green}"
 	elif [ "${1}" -eq 1 ]; then
 		echo -n "${red}"
@@ -429,8 +429,8 @@ _run_step() {
 		
 		if [ "${status}" -eq 0 ] && [ ! "${no_skip_completed}" ]; then
 			return 0
-		elif [ "${status}" -eq 2 ]; then
-			return 2
+		elif [ "${status}" -eq 2 ] || [ "${status}" -eq 4 ]; then
+			return "${status}"
 		fi
 
 		[ "${status_message}" ] && echo
@@ -566,11 +566,10 @@ _211_set_keyboard_layout() {
 _221_verify_boot_mode() {
 	local path='/sys/firmware/efi/efivars'
 
-	# Always return 2 when the step status is checked, but override the
-	# color used when printing the message (if necessary).
 	if ls "${path}" > /dev/null; then
-		echo "${green}This system is booted in UEFI mode."
-		return 2
+		echo "This system is booted in UEFI mode."
+		# Output in green and never "actually run" this step.
+		return 4
 	else
 		local msg="Could not access the directory '${path}'."
 		msg+=' This system is probably not booted in UEFI mode.'
