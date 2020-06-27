@@ -1562,7 +1562,7 @@ EOF
 _version() {
 	cat << EOF
 Carisa: A Respectful Install Script for Arch
-Version 0.1.0
+Version 0.2.0
 
 Copyright (C) 2020 Justin Yao Du.
 Licensed under the MIT License.
