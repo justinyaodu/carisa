@@ -1509,7 +1509,7 @@ _511_cleanup() {
 	_ask_yes_no 'Delete carisa and associated files?' 'yes' || return 1
 
 	[ -f "${0}" ] && _ask_run "rm '${0}'"
-	[ -d "${persist_dir}" && _ask_run "rm -r '${persist_dir}'"
+	[ -d "${persist_dir}" ] && _ask_run "rm -r '${persist_dir}'"
 }
 
 _611_reboot() {
