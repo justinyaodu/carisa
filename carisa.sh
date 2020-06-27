@@ -1448,7 +1448,7 @@ _462_run_os_prober() {
 	echo
 	_info 'Please ensure that all partitions containing other operating
 			systems are mounted before proceeding.'
-	_tty_reminder
+	_ctrl_c_reminder
 
 	echo
 	_ask_run 'os-prober'
