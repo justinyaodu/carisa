@@ -922,7 +922,7 @@ _313_pacstrap() {
 	_bullet 'refind'
 	_bullet 'grub'
 	_bullet 'os-prober (detect other operating systems for GRUB)'
-	_bullet 'efibootmgr (modify and reorder EFI boot entries)'
+	_bullet 'efibootmgr (create, modify, and reorder EFI boot entries)'
 	packages="${packages} $(_ask_packages)"
 
 	echo
