@@ -918,10 +918,11 @@ _313_pacstrap() {
 	packages="${packages} $(_ask_packages)"
 
 	echo
-	_info 'Add a boot manager? Suggestions:'
+	_info 'Add a boot manager and related tools? Suggestions:'
+	_bullet 'refind'
 	_bullet 'grub'
 	_bullet 'os-prober (detect other operating systems for GRUB)'
-	_bullet 'refind'
+	_bullet 'efibootmgr (modify and reorder EFI boot entries)'
 	packages="${packages} $(_ask_packages)"
 
 	echo
@@ -1362,6 +1363,7 @@ _460_boot_manager() {
 		_ctrl_c_reminder
 		_pause
 	fi
+	_run_step _464_reorder_efi_boot_entries
 }
 
 # _package_installed <package>
@@ -1435,11 +1437,6 @@ _462_run_os_prober() {
 		fi
 	fi
 
-	if [ ! "${package_installed}" ]; then
-		_warn "${not_installed_msg}"
-		return 2
-	fi
-
 	_info "The 'os-prober' utility detects other installed operating systems
 			and adds GRUB boot entries for them."
 	_ask_yes_no "Detect other operating systems?" 'yes' || return 1
@@ -1493,6 +1490,42 @@ _463_grub_mkconfig() {
 
 	echo
 	_ask_run "grub-mkconfig -o ${path}"
+}
+
+_464_reorder_efi_boot_entries() {
+	if _package_installed 'efibootmgr'; then
+		local package_installed='true'
+	fi
+
+	local not_installed_msg="The 'efibootmgr' package is not installed."
+
+	if [ "${1}" == '-s' ]; then
+		local boot_mode_msg
+		boot_mode_msg="$(_221_verify_boot_mode -s)"
+
+		if [ "${?}" -ne 4 ]; then
+			echo "${boot_mode_msg}"
+			return 2
+		elif [ "${package_installed}" ]; then
+			_marked_status
+			return
+		else
+			echo "${not_installed_msg}"
+			return 2
+		fi
+	fi
+
+	_ask_yes_no 'List EFI boot entries?' 'yes' || return 1
+	_ask_run 'efibootmgr'
+
+	echo
+	if _ask_yes_no 'Reorder EFI boot entries?' 'yes'; then
+		_info 'Please specify the new boot order. For example:'
+		_bullet 'efibootmgr --bootorder XXXX,YYYY,ZZZZ' '#'
+		_ask_run 'efibootmgr --bootorder '
+	fi
+
+	_ask_mark_complete
 }
 
 _500_finish() {
