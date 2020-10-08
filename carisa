@@ -498,8 +498,8 @@ _111_readme() {
 	echo
 	_info "It is highly recommended to have the Arch Linux installation
 			guide at <${wiki_url}> open during the installation
-			process, whether in another TTY using 'elinks' or on
-			another device."
+			process, whether in another TTY using
+			'installation_guide' or on another device."
 	echo
 	_info 'You may press Ctrl+C to exit carisa at any time, and your
 			progress will be remembered when you run carisa again.'
