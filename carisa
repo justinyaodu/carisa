@@ -518,8 +518,8 @@ _121_create_persist_dir() {
 	fi
 
 	_info "The optional persistence directory '${persist_dir}' is located in
-			the same directory as 'carisa.sh'. It is used for the
-			following purposes:"
+			the same directory as the carisa script. It is used for
+			the following purposes:"
 	_bullet 'Storing user preferences (e.g. keyboard layout, text editor)'
 	_bullet 'Remembering which steps have been marked as complete'
 	echo	
@@ -995,7 +995,7 @@ _321_generate_fstab() {
 
 # Display the command used to (re)run carisa in the chroot.
 _show_carisa_in_chroot_command() {
-	_bullet 'bash /carisa.sh chroot' '#'
+	_bullet 'bash /carisa chroot' '#'
 }
 
 # Remind the user of how to exit carisa once in the chroot.
