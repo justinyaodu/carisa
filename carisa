@@ -565,7 +565,7 @@ _211_set_keyboard_layout() {
 _221_verify_boot_mode() {
 	local path='/sys/firmware/efi/efivars'
 
-	if ls "${path}" > /dev/null; then
+	if ls "${path}" &> /dev/null; then
 		echo "This system is booted in UEFI mode."
 		# Output in green and never "actually run" this step.
 		return 4
