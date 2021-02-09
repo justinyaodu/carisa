@@ -2,6 +2,8 @@
 
 `carisa` is an unopinionated install script for Arch Linux, which closely follows the [installation guide](https://wiki.archlinux.org/index.php/installation_guide) on the ArchWiki. I call it "respectful" because it asks permission for everything and cleans up after itself.
 
+![demo.png]
+
 ## Usage
 
 After booting the [Arch Linux live medium](https://www.archlinux.org/download/) and connecting to the internet:
