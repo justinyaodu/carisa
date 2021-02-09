@@ -261,15 +261,15 @@ _is_marked_complete() {
 # Print a status message and return a status code for the calling function.
 _marked_status() {
 	if [ ! -d "${persist_dir}" ]; then
-		echo 'Status unknown (persistence disabled).'
+		echo 'Unknown (persistence disabled).'
 		return 3
 	fi
 
 	if _is_marked_complete "${FUNCNAME[1]}"; then
-		echo 'This step was marked as complete.'
+		echo 'Marked as complete.'
 		return 0
 	else
-		echo 'This step has not been marked as complete yet.'
+		echo 'Not marked as complete.'
 		return 1
 	fi
 }
