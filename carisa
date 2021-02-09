@@ -136,10 +136,10 @@ _info() {
 ######## General User Input ########
 
 # _pause [message]
-# Make the user press any key to continue.
+# Make the user press Enter to continue.
 _pause() {
-	local msg="${1:-"Press any key to continue..."}"
-	read -s -n 1 -p "${green_enclosed}${msg}${reset_enclosed}"
+	local msg="${1:-"Press Enter to continue..."}"
+	read -s -p "${green_enclosed}${msg}${reset_enclosed}"
 
 	# Add a newline.
 	echo
