@@ -248,6 +248,7 @@ _ask_mark_complete() {
 	else
 		_warn "Cannot mark this step (${function_name}) as complete,
 				because persistence is disabled."
+		_pause
 	fi
 }
 
